@@ -1,0 +1,22 @@
+{
+  "source": "The EasyList authors",
+  "compiled": 104240,
+  "networkRules": 7861,
+  "lists": [
+    {
+      "name": "easylist",
+      "version": "202610131455",
+      "domainFilters": 49599,
+      "pathFilters": 2342,
+      "networkRules": 2443
+    },
+    {
+      "name": "easyprivacy",
+      "version": "202610131537",
+      "domainFilters": 46976,
+      "pathFilters": 5323,
+      "networkRules": 5418
+    }
+  ],
+  "scope": "Plain domain and domain-anchored path rules; supported resource, third-party and initiator options. Advanced syntax is skipped."
+}

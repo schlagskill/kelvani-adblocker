@@ -1,0 +1,25 @@
+body{--text:#292929;--muted:#657080;--line:#e1e5eb;--surface:#fff;--soft:#f5f6f8;--accent:#c6212b;--hover:#ad1c25;--on-accent:#fff;font-size:14px}
+body:not([data-ui-density]) main{max-width:960px;padding:28px 24px}
+body:not([data-ui-density]) header{margin-bottom:24px;padding-bottom:20px}
+body:not([data-ui-density]) .brand img{width:260px}
+.hero h1{font-size:var(--ui-title);line-height:1.25;letter-spacing:-.7px;margin:0 0 8px}
+.hero{padding-bottom:20px}.hero .power{padding-top:16px;margin-top:16px}
+.card{padding:20px;margin-bottom:16px}.setting{padding:12px 0;font-size:14px}
+.setting small{font-size:12px;line-height:1.5;margin-top:4px}.domain{font-size:20px;line-height:1.4;margin:12px 0}
+.card>p{font-size:14px}.pill{font-size:11px;letter-spacing:0;border-radius:6px}
+.hint{margin:12px 0 0}details{border-top:1px solid var(--line);margin-top:16px;padding-top:4px}summary{font-size:14px;font-weight:600;padding:12px 0}
+details label{font-size:12px;line-height:1.5;margin-top:12px}footer{font-size:11px;padding:8px 0;line-height:1.5}
+body[data-ui-density=compact]{width:340px;min-width:340px;background:#fff}
+body[data-ui-density=compact] main{padding:0 16px 16px}
+body[data-ui-density=compact] header{margin:0 -16px 16px;padding:16px;border-bottom:1px solid var(--line)}
+body[data-ui-density=compact] .brand img{width:276px;height:auto}
+body[data-ui-density=compact] .power{padding:12px 16px;font-size:14px;border-color:var(--line);border-radius:12px 12px 0 0}
+body[data-ui-density=compact] .site{padding:12px 16px 0}
+body[data-ui-density=compact] .site::before{height:76px;border-color:var(--line);border-radius:0 0 12px 12px}
+body[data-ui-density=compact] h1{font-size:16px;line-height:1.5;font-weight:600;color:var(--text)}
+body[data-ui-density=compact] #site-status{font-size:12px;line-height:1.5;margin:4px 0 28px;color:var(--muted)}
+body[data-ui-density=compact] #exception,body[data-ui-density=compact] #expand{width:calc(100% + 32px);margin-left:-16px}
+body[data-ui-density=compact] #expand{margin-top:8px}
+body[data-ui-density=compact] #preview{font-size:11px;line-height:1.5;margin:12px 0 0;color:var(--muted)}
+
+.preferences-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:16px;align-items:start}.preferences-grid>.card{margin:0}.preferences-grid>.card:last-child{grid-column:1/-1}#status:empty{display:none}@media(max-width:700px){.preferences-grid{grid-template-columns:1fr}.preferences-grid>.card:last-child{grid-column:auto}}

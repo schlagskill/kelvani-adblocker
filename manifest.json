@@ -1,0 +1,66 @@
+{
+  "manifest_version": 3,
+  "name": "KelvaniAdBLocker",
+  "version": "0.3.0",
+  "minimum_chrome_version": "120",
+  "description": "Lokaler Werbeblocker mit EasyList-Domainfiltern, Website-Ausnahmen und eigenen Blockierregeln.",
+  "permissions": [
+    "storage",
+    "declarativeNetRequest",
+    "activeTab",
+    "scripting"
+  ],
+  "icons": {
+    "16": "assets/icon16.png",
+    "32": "assets/icon32.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "KelvaniAdBLocker",
+    "default_icon": {
+      "16": "assets/icon16.png",
+      "32": "assets/icon32.png",
+      "48": "assets/icon48.png",
+      "128": "assets/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "easylist",
+        "enabled": true,
+        "path": "filters/rules.json"
+      },
+      {
+        "id": "easyprivacy",
+        "enabled": true,
+        "path": "filters/privacy-rules.json"
+      }
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'"
+  },
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ]
+}

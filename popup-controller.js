@@ -27,5 +27,15 @@ export function createPopupController(api) {
     return {settings,host,excluded:!excluded,reloadFailed};
   }
   async function toggleEnabled(){const state=await readSettings();return save({...state,enabled:!state.enabled});}
-  return {initialize,toggleException,toggleEnabled};
+  async function toggleYouTube(){
+    if(!tab)throw Error('Keine YouTube-Seite geöffnet.');
+    const host=hostname(tab.url),latest=await api.tabs.get(tab.id);
+    if(!/(^|\.)youtube\.com$/.test(host)||hostname(latest.url)!==host)throw Error('YouTube-Seite wurde gewechselt. Popup bitte neu öffnen.');
+    const state=await readSettings();
+    if(!state.enabled||isExcluded(host,state.exceptions))throw Error('Zuerst den Schutz für diese Website aktivieren.');
+    const settings=await save({...state,youtube:!state.youtube});let reloadFailed=false;
+    try{await api.tabs.reload(tab.id);}catch{reloadFailed=true;}
+    return {settings,reloadFailed};
+  }
+  return {initialize,toggleException,toggleEnabled,toggleYouTube};
 }

@@ -1,3 +1,7 @@
+## 0.3.2
+
+YouTube-Schalter direkt im Popup mit eigenem Status und automatischem Neuladen nach dem Speichern. Player-Filter verarbeitet zusätzlich XHR-Antworten und verschachtelte Player-Antworten von next. Fremde Endpunkte, fehlgeschlagene Antworten und Wiedergabe-/Attestierungsdaten bleiben unverändert. Keine bestätigte Garantie für werbefreies Live-YouTube.
+
 ## 0.3.1
 
 Rotes K-Logo statt Schild. Redundanten Aktiv-Text entfernt. Skip-Beobachtung verwirft veraltete Aktionen und klickt denselben Button nicht mehrfach.

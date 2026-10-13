@@ -1,4 +1,4 @@
-# KelvaniAdBlocker
+# KelvaniAdBlocker (kelvani.net)
 
 Original browser extension by schlagskill. Chrome / Edge, Manifest V3. Test release; live Edge and YouTube behavior is not yet verified.
 

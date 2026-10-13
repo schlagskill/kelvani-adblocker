@@ -32,7 +32,7 @@ MAIN-world helpers are registered at document_start only after opt-in. Disabling
 storage stores switches, domain lists and revision numbers locally. activeTab reads the current hostname after opening the popup. declarativeNetRequest applies network filters. scripting and HTTP/HTTPS host access let the extension install the opted-in page helpers. Website access is also used for cosmetic cleanup. No browsing history, passwords or request bodies are stored. The YouTube helper processes player responses locally in the website context only.
 
 ## Validation
-Run node --test. 42 tests cover filter scope and exceptions, safe URL handling, native rule budgets, settings conflicts, atomic failure rollback, script registration, source response preservation, targeted YouTube cleanup, detector callbacks and content-script disabling. All JavaScript syntax is checked during packaging. Native Edge/Chrome installation and live YouTube behavior remain unverified. Local HTML is clearly marked as a design preview and blocks no requests.
+Run node --test. 43 tests cover filter scope and exceptions, safe URL handling, native rule budgets, settings conflicts, atomic failure rollback, script registration, source response preservation, targeted YouTube cleanup, detector callbacks and content-script disabling. All JavaScript syntax is checked during packaging. Native Edge/Chrome installation and live YouTube behavior remain unverified. Local HTML is clearly marked as a design preview and blocks no requests.
 
 ## Licenses
 Original code: MIT (LICENSE). EasyList/EasyPrivacy source data and derived rules: CC BY-SA 3.0, credited to The EasyList authors, https://easylist.to/. See filters/NOTICE.md. No third-party application source code or UI was copied.

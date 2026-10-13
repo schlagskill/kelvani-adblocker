@@ -9,7 +9,7 @@ function notice(text,error=false){showNotice($("notice"),text,{error});}
 function render(reset=false){
  for(const key of ['enabled','cosmetic','youtube','tracking'])$(key).checked=state[key];
  if(reset||!dirty)for(const key of ['exceptions','blocked','antiSites'])$(key).value=state[key].join('\n');
- $('status').textContent=native?(state.enabled?'Netzwerkfilter sind aktiv.':'Schutz pausiert.'):'Design-Vorschau · hier werden keine Anfragen blockiert.';
+ $('status').hidden=native&&state.enabled; $('status').textContent=native?(state.enabled?'':'Schutz pausiert.'):'Design-Vorschau · hier werden keine Anfragen blockiert.';
  $('host').textContent=currentHost||'Keine unterstützte Website geöffnet';
  $('exception').textContent=currentHost&&isExcluded(currentHost,state.exceptions)?'Schutz für diese Website aktivieren':'Website vom Schutz ausnehmen';
  $('compatibility').checked=Boolean(currentHost&&isExcluded(currentHost,state.antiSites));

@@ -1,3 +1,7 @@
+## 0.3.1
+
+Rotes K-Logo statt Schild. Redundanten Aktiv-Text entfernt. Skip-Beobachtung verwirft veraltete Aktionen und klickt denselben Button nicht mehrfach.
+
 # UI release 0.3.0
 
 Gemeinsame Controls, Rückmeldungen und aufgeräumte Filter-Einstellungen.

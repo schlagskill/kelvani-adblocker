@@ -13,3 +13,8 @@ No source provides a guarantee of universal adblock invisibility. Automated fixt
 ## YouTube update 0.3.2
 
 Official browser API reference: https://developer.chrome.com/docs/extensions/reference/api/scripting and https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts . Registered MAIN-world scripts use document_start, so enabling the module requires reloading existing YouTube pages. Our targeted fetch/XHR code is original; no global JSON.parse override or playback/attestation bypass is used. Tests use controlled fixtures, not a claim of verified live ad blocking.
+
+
+## 0.3.3: Playback incident
+
+User reported endless loading in 0.3.2. Player mutation is withdrawn. Fixtures check unchanged APIs and registration cleanup; native playback and complete ad blocking remain unverified.

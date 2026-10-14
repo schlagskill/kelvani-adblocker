@@ -18,8 +18,8 @@ function render(){
  $('site-status').classList.toggle('site-excluded',excluded);
  $('preview').hidden=native;
  const youtube=Boolean(host&&/(^|\.)youtube\.com$/.test(host));$('youtube-controls').hidden=!youtube;$('youtube-switch').checked=state.youtube;$('youtube-switch').disabled=!native||!ready||busy||excluded||!state.enabled;
- $('youtube-status').textContent=excluded?'Diese Website ist ausgenommen.':!state.enabled?'Der gesamte Schutz ist pausiert.':state.youtube?'YouTube-Modus aktiv · experimentell. Bereits geöffnete Videos neu laden.':'YouTube-Modus ist ausgeschaltet. Hier einschalten und die Seite neu laden.';
- if(youtube&&!state.youtube&&!excluded&&state.enabled)$('site-status').textContent='Webfilter aktiv · YouTube-Modus ausgeschaltet.';
+ $('youtube-status').textContent=excluded?'Diese Website ist ausgenommen.':!state.enabled?'Der gesamte Schutz ist pausiert.':state.youtube?'Assistent aktiv: klickt sichtbare Überspringen-Buttons. Werbung kann weiterhin erscheinen.':'Assistent ausgeschaltet. YouTube-Werbung wird derzeit nicht vollständig blockiert.';
+ if(youtube&&!excluded&&state.enabled)$('site-status').textContent='Kompatibilitätsmodus für YouTube.';
 }
 function readPreview(){try{return validate(JSON.parse(localStorage.getItem('kelvani-adblocker-preview')));}catch{return validate(defaults);}}
 function savePreview(next){state=validate({...next,revision:next.revision+1});localStorage.setItem('kelvani-adblocker-preview',JSON.stringify(state));}
@@ -35,7 +35,7 @@ $('enabled').addEventListener('change',async()=>{
  try{if(native)state=await controller.toggleEnabled();else{state=readPreview();savePreview({...state,enabled:!state.enabled});}notice(state.enabled?'Schutz aktiviert.':'Schutz pausiert.');}
  catch(error){notice(error.message,true);}finally{busy=false;render();}
 });
-$('youtube-switch').addEventListener('change',async()=>{if(!ready||busy||!native)return;busy=true;render();try{const result=await controller.toggleYouTube();state=result.settings;notice(result.reloadFailed?'Gespeichert. Bitte YouTube neu laden.':state.youtube?'YouTube-Modus eingeschaltet. Seite wird neu geladen.':'YouTube-Modus ausgeschaltet.');}catch(error){notice(error.message,true);}finally{busy=false;render();}});
+$('youtube-switch').addEventListener('change',async()=>{if(!ready||busy||!native)return;busy=true;render();try{const result=await controller.toggleYouTube();state=result.settings;notice(result.reloadFailed?'Gespeichert. Bitte YouTube neu laden.':state.youtube?'Überspring-Assistent eingeschaltet. Seite wird neu geladen.':'Überspring-Assistent ausgeschaltet.');}catch(error){notice(error.message,true);}finally{busy=false;render();}});
 $('expand').addEventListener('click',async()=>{
  try{if(native)await chrome.tabs.create({url:chrome.runtime.getURL('index.html')});else window.open('index.html','_blank','noopener');}catch(error){notice(error.message,true);}
 });

@@ -1,3 +1,7 @@
+## 0.3.3 — YouTube playback correction
+
+Withdraw player-response hooks; remove legacy registration. YouTube-initiated traffic bypasses network filtering. Cosmetic and detector helpers no longer modify YouTube. The optional assistant only clicks visible skip controls; YouTube ads are not fully blocked. Reload extension and YouTube after updating.
+
 ## 0.3.2
 
 YouTube-Schalter direkt im Popup mit eigenem Status und automatischem Neuladen nach dem Speichern. Player-Filter verarbeitet zusätzlich XHR-Antworten und verschachtelte Player-Antworten von next. Fremde Endpunkte, fehlgeschlagene Antworten und Wiedergabe-/Attestierungsdaten bleiben unverändert. Keine bestätigte Garantie für werbefreies Live-YouTube.

@@ -25,15 +25,16 @@ export function scriptsFor(state) {
   const excludeMatches=state.exceptions.map(host=>`*://*.${host}/*`);
   const base={runAt:'document_start',world:'MAIN',persistAcrossSessions:true,excludeMatches};
   const scripts=[];
-  if(state.youtube) scripts.push({...base,id:'kelvani-youtube',matches:['*://*.youtube.com/*'],js:['youtube-main.js']});
-  const domains=state.antiSites.filter(host=>!isExcluded(host,state.exceptions));
+  const domains=state.antiSites.filter(host=>!isExcluded(host,state.exceptions)&&!/(^|\.)youtube(?:-nocookie)?\.com$/.test(host));
   if(domains.length) scripts.push({...base,id:'kelvani-compatibility',matches:domains.map(host=>`*://*.${host}/*`),js:['anti-detection.js']});
   return scripts;
 }
 export function isExcluded(host, exceptions) { return exceptions.some(domain => host === domain || host.endsWith(`.${domain}`)); }
 export function dynamicRules(state) {
   if (!state.enabled) return [{id:1,priority:100000,action:{type:'allow'},condition:{urlFilter:'*'}}];
-  let id=1; const rules=[];
+  let id=1; const rules=[{id:id++,priority:10000,action:{type:'allow'},condition:{initiatorDomains:['youtube.com','youtube-nocookie.com']}}];
+  // Playback compatibility: do not break YouTube player API/media requests.
+
   for (const domain of state.exceptions) {
     rules.push({id:id++,priority:1000,action:{type:'allow'},condition:{initiatorDomains:[domain]}});
     rules.push({id:id++,priority:1000,action:{type:'allowAllRequests'},condition:{requestDomains:[domain],resourceTypes:['main_frame','sub_frame']}});

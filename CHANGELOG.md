@@ -1,3 +1,10 @@
+## 0.4.0 - experimental player filter
+
+- Replace skip clicks with document-start player ad-schedule filtering.
+- Preserve streaming and verification data; keep generic YouTube network bypass.
+- Add bootstrap, fetch, parsed navigation and XHR JSON coverage.
+- Live coverage remains unverified; not marketed as complete protection.
+
 ## 0.3.3 — YouTube playback correction
 
 Withdraw player-response hooks; remove legacy registration. YouTube-initiated traffic bypasses network filtering. Cosmetic and detector helpers no longer modify YouTube. The optional assistant only clicks visible skip controls; YouTube ads are not fully blocked. Reload extension and YouTube after updating.

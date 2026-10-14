@@ -18,3 +18,8 @@ Official browser API reference: https://developer.chrome.com/docs/extensions/ref
 ## 0.3.3: Playback incident
 
 User reported endless loading in 0.3.2. Player mutation is withdrawn. Fixtures check unchanged APIs and registration cleanup; native playback and complete ad blocking remain unverified.
+
+
+## 2026-10-14 player-filter research
+
+Primary maintainer rules inspected: https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/quick-fixes.txt (player fetch and XHR adPlacements/adSlots pruning; additional current server-contract fixes show simple pruning is not universal). No third-party implementation copied. Original targeted implementation preserves media and attestation. Native extension-manager navigation remains unavailable to the automation tools, so live extension testing is not claimed.

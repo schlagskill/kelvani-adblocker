@@ -1,12 +1,14 @@
-# KelvaniAdBlocker 0.3.3 ([kelvani.net](http://kelvani.net/adblocker.html))
+# KelvaniAdBlocker 0.4.0 ([kelvani.net](http://kelvani.net/adblocker.html))
 
 Original Chrome/Edge Manifest V3 extension by schlagskill. Local settings, no account or telemetry.
 
-## YouTube playback correction
+## Experimental YouTube player filter (0.4.0)
 
-A user reported endless video loading with 0.3.2. Version 0.3.3 retires fetch/XHR/player-response hooks and unregisters the old YouTube page script. Requests initiated by youtube.com or youtube-nocookie.com bypass network filtering. Cosmetic cleanup and detector compatibility also leave YouTube untouched.
+The skip-click assistant has been removed. The opt-in filter runs at document start in the page world. It removes adPlacements and adSlots from playable player responses before the player consumes them, covering bootstrap assignment, parsed navigation data, fetch and XHR JSON. It retains playerAds, attestation, playabilityStatus, streamingData, captions and media URLs. It never seeks, mutes, speeds up videos or clicks skip buttons.
 
-**YouTube ads are not currently fully blocked.** The optional assistant only clicks visible skip buttons in an ad-marked player. It does not alter video time, playback rate, media URLs, player responses or network APIs. The popup states this limitation. Live playback after this correction is still unverified.
+Playback requests still bypass generic domain filters to prevent the earlier endless-loading failure. Player data is filtered separately. Invalid payloads, unrelated endpoints, unplayable responses and network errors retain their original behavior. Pause and site exclusions disable the filter; enabling it requires a page reload, performed by the popup.
+
+**Live YouTube ad blocking and playback remain unverified.** Server-side inserted ads and anti-block variants are not comprehensively handled. This is a development candidate, not a confirmed complete YouTube blocker.
 
 ## Update
 
@@ -18,7 +20,7 @@ Supported EasyList/EasyPrivacy filters, optional cosmetic cleanup, global pause,
 
 ## Validation
 
-Run node --test. Fixtures check untouched player APIs, removal of legacy registrations, YouTube-scoped allow rules, settings rollback, skip controls and popup behavior. These tests do not prove live ad-block coverage.
+Run node --test. Tests check pre-consumption ad-field removal, intact video/verification data, malformed responses, unrelated requests, pause races, script registration, settings rollback and popup behavior. They do not establish live YouTube coverage.
 
 ## Licenses
 

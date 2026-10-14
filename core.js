@@ -25,6 +25,7 @@ export function scriptsFor(state) {
   const excludeMatches=state.exceptions.map(host=>`*://*.${host}/*`);
   const base={runAt:'document_start',world:'MAIN',persistAcrossSessions:true,excludeMatches};
   const scripts=[];
+  if(state.youtube)scripts.push({...base,id:'kelvani-youtube',matches:['*://*.youtube.com/*','*://*.youtube-nocookie.com/*'],js:['youtube-main.js']});
   const domains=state.antiSites.filter(host=>!isExcluded(host,state.exceptions)&&!/(^|\.)youtube(?:-nocookie)?\.com$/.test(host));
   if(domains.length) scripts.push({...base,id:'kelvani-compatibility',matches:domains.map(host=>`*://*.${host}/*`),js:['anti-detection.js']});
   return scripts;

@@ -29,7 +29,14 @@
   let url;try{url=new URL(typeof args[0]==='string'||args[0] instanceof URL?args[0]:args[0].url,location.href);}catch{return response;}
   if(!/(^|\.)youtube(?:-nocookie)?\.com$/.test(url.hostname)||!/^\/youtubei\/v1\/player$/.test(url.pathname))return response;
   try{
-   const text=await response.clone().text();if(!enabled||text.length>5000000)return response;
+   // A delayed inspection must not stall playback. Keep the original response
+   // untouched and return it when inspection cannot finish promptly.
+   const copy=response.clone();let timeout;
+   const text=await Promise.race([
+    copy.text(),
+    new Promise(resolve=>{timeout=setTimeout(()=>resolve(null),1500);})
+   ]).finally(()=>clearTimeout(timeout));
+   if(text===null||!enabled||text.length>5000000)return response;
    const body=Reflect.apply(parse,JSON,[text]),before=JSON.stringify(body);prune(body);const after=JSON.stringify(body);
    if(before===after)return response;
    const headers=new Headers(response.headers);headers.delete('content-length');headers.delete('content-encoding');

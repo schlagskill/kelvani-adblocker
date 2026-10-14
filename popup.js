@@ -1,4 +1,5 @@
 import "./assets/ui/review.js";
+import { diagnosticReport } from './diagnostics.js';
 import { showNotice } from "./assets/ui/feedback.js?v=1";
 import { icon } from "./assets/ui/icons.js?v=1.0";
 import {defaults,validate,isExcluded} from './core.js?v=0.3.2';
@@ -8,6 +9,7 @@ const controller=native?createPopupController(chrome):null;
 let state=validate(defaults),host=null,ready=false,busy=false,timer;
 function notice(text,error=false){showNotice($("notice"),text,{error});}
 function render(){
+ $('diagnose').disabled=!ready||busy||!host;
  const excluded=Boolean(host&&isExcluded(host,state.exceptions));
  $('host').textContent=host||'Hier ist keine Website geöffnet';
  $('site-status').textContent=!host?'Öffne eine normale Website.':excluded?'Diese Website ist ausgenommen.':state.enabled?'Schutz für diese Website aktiv.':'Werbeblocker ist pausiert.';
@@ -46,4 +48,12 @@ try{
  ready=true;
 }catch(error){notice(error.message,true);}render();
 
+$('diagnose').onclick=()=>{$('diagnostic-panel').hidden=!$('diagnostic-panel').hidden;};
+$('download-diagnostic').onclick=()=>{
+ const version=native?chrome.runtime.getManifest().version:'preview';
+ const report=diagnosticReport(state,host,version);
+ const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));
+ const link=document.createElement('a');link.href=url;link.download='kelvani-diagnose.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ notice('Diagnosebericht lokal gespeichert.');
+};
 $("expand").textContent="Alle Einstellungen";$("expand").append(icon("expand"));

@@ -1,3 +1,7 @@
+# 0.4.1
+
+Local diagnostics and bounded YouTube response inspection.
+
 ## 0.4.0 - experimental player filter
 
 - Replace skip clicks with document-start player ad-schedule filtering.

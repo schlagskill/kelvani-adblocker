@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "KelvaniAdBLocker",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "minimum_chrome_version": "120",
   "description": "Lokaler Werbeblocker mit EasyList-Domainfiltern, Website-Ausnahmen und eigenen Blockierregeln.",
   "permissions": [
@@ -63,5 +63,5 @@
     "http://*/*",
     "https://*/*"
   ],
-  "version_name": "0.5.1 Korrekturen"
+  "version_name": "0.6.0 Settings"
 }

@@ -25,3 +25,7 @@ Run node --test. Tests check pre-consumption ad-field removal, intact video/veri
 ## Licenses
 
 Original code: MIT (LICENSE). EasyList/EasyPrivacy data and derived rules: CC BY-SA 3.0, The EasyList authors, https://easylist.to/; see filters/NOTICE.md. Inter: SIL Open Font License. Branding derives from owner-provided logos. Shared UI: assets/ui/README.md.
+
+
+Settings update: gear in the popup; English by default, German selectable and saved.
+Full-page settings no longer include the current website card; website exceptions remain in the popup.

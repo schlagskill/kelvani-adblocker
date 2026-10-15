@@ -1,3 +1,5 @@
+import './language.js';
+globalThis.KelvaniLanguage.startLanguage();
 import "./assets/ui/review.js";
 import { diagnosticReport } from './diagnostics.js';
 import { showNotice } from "./assets/ui/feedback.js?v=1";
@@ -57,3 +59,6 @@ $('download-diagnostic').onclick=()=>{
  notice('Diagnosebericht lokal gespeichert.');
 };
 $("expand").textContent="Alle Einstellungen";$("expand").append(icon("expand"));
+
+function toggleSettings(open){document.body.classList.toggle('settings-open',open);$('settings-panel').hidden=!open;$('settings-toggle').setAttribute('aria-expanded',String(open));}
+$('settings-toggle').onclick=()=>toggleSettings($('settings-panel').hidden);$('settings-back').onclick=()=>toggleSettings(false);

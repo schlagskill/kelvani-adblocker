@@ -1,3 +1,5 @@
+import './language.js';
+globalThis.KelvaniLanguage.startLanguage();
 import {exportSettings,importSettings} from "./settings-backup.js";
 import "./assets/ui/review.js";
 import { showNotice } from "./assets/ui/feedback.js?v=1";
@@ -11,12 +13,7 @@ function render(reset=false){
  for(const key of ['enabled','cosmetic','youtube','tracking','compatibilityAll'])$(key).checked=state[key];
  if(reset||!dirty)for(const key of ['exceptions','blocked','antiSites'])$(key).value=state[key].join('\n');
  $('status').hidden=native&&state.enabled; $('status').textContent=native?(state.enabled?'':'Schutz pausiert.'):'Design-Vorschau · hier werden keine Anfragen blockiert.';
- $('host').textContent=currentHost||'Keine unterstützte Website geöffnet';
- $('exception').textContent=currentHost&&isExcluded(currentHost,state.exceptions)?'Schutz für diese Website aktivieren':'Website vom Schutz ausnehmen';
- $('compatibility').checked=state.compatibilityAll||Boolean(currentHost&&isExcluded(currentHost,state.antiSites));
  for(const control of document.querySelectorAll('button,input'))control.disabled=busy;
- $('exception').disabled=busy||!currentHost;$('compatibility').disabled=busy||!currentHost||state.compatibilityAll;
- $('compatibility-hint').textContent=state.compatibilityAll?'Für alle Websites eingeschaltet.':'Nur für diese Website · experimentell.';
 }
 async function persist(next,reset=false){
  if(busy)return;busy=true;render();
@@ -34,9 +31,6 @@ async function persist(next,reset=false){
 for(const key of ['enabled','cosmetic','youtube','tracking','compatibilityAll'])$(key).addEventListener('change',()=>persist({...state,[key]:$(key).checked}));
 for(const key of ['exceptions','blocked','antiSites'])$(key).addEventListener('input',()=>{dirty=true;});
 $('save').addEventListener('click',()=>persist({...state,...Object.fromEntries(['exceptions','blocked','antiSites'].map(key=>[key,$(key).value.split(/\s+/).filter(Boolean)]))},true));
-$('exception').addEventListener('click',()=>{const matching=state.exceptions.filter(d=>currentHost===d||currentHost.endsWith('.'+d));persist({...state,exceptions:matching.length?state.exceptions.filter(d=>!matching.includes(d)):[...state.exceptions,currentHost]});});
-$('compatibility').addEventListener('change',()=>{const matching=state.antiSites.filter(d=>currentHost===d||currentHost.endsWith('.'+d));persist({...state,antiSites:matching.length?state.antiSites.filter(d=>!matching.includes(d)):[...state.antiSites,currentHost]});});
-$('expand').addEventListener('click',()=>{if(native)chrome.tabs.create({url:chrome.runtime.getURL('index.html')});else window.open('index.html','_blank','noopener');});
 $('diagnose').addEventListener('click',async()=>{
  if(!native){$('diagnostic').textContent='Nur in der installierten Erweiterung verfügbar. Die Vorschau simuliert keine Browser-Prüfung.';return;}
  $('diagnose').disabled=true;
@@ -52,7 +46,6 @@ try{
  const report=await(await fetch('filters/report.json')).json();$('rules').textContent=`${report.compiled.toLocaleString('de-DE')} Filter`;
 }catch(error){notice(error.message,true);}render();
 
-$("expand").replaceChildren(icon("expand"));
 
 $('export-settings').addEventListener('click',()=>{
  const blob=new Blob([JSON.stringify(exportSettings(state),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='KelvaniAdBlocker-Einstellungen.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);notice('Einstellungen lokal exportiert.');
@@ -62,10 +55,10 @@ $('settings-file').addEventListener('change',async()=>{
  const file=$('settings-file').files[0];$('settings-file').value='';if(!file)return;
  try{
   if(file.size>1000000)throw new Error('Die Sicherung ist zu groß.');
-  if(dirty&&!confirm('Ungespeicherte Änderungen durch die Sicherung ersetzen?'))return;
+  if(dirty&&!confirm(globalThis.KelvaniLanguage.translate('Ungespeicherte Änderungen durch die Sicherung ersetzen?')))return;
   const latest=native?(await chrome.storage.local.get('settings')).settings:JSON.parse(localStorage.getItem('kelvani-adblocker-preview')||'null');
   const next=importSettings(await file.text(),latest||defaults);
-  if(!confirm('Gespeicherte Ausnahmen und Regeln mit dieser Sicherung ersetzen?'))return;
+  if(!confirm(globalThis.KelvaniLanguage.translate('Gespeicherte Ausnahmen und Regeln mit dieser Sicherung ersetzen?')))return;
   await persist(next,true);
  }catch(error){notice(error.message,true);}
 });

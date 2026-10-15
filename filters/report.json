@@ -1,7 +1,7 @@
 {
   "source": "The EasyList authors",
-  "compiled": 104240,
-  "networkRules": 7861,
+  "compiled": 104241,
+  "networkRules": 7862,
   "lists": [
     {
       "name": "easylist",
@@ -14,9 +14,9 @@
       "name": "easyprivacy",
       "version": "202610131537",
       "domainFilters": 46976,
-      "pathFilters": 5323,
-      "networkRules": 5418
+      "pathFilters": 5324,
+      "networkRules": 5419
     }
   ],
-  "scope": "Plain domain and domain-anchored path rules; supported resource, third-party and initiator options. Advanced syntax is skipped."
+  "scope": "Plain domain, domain-anchored path and protocol-anchored URL rules; supported resource, third-party and initiator options. Unsupported exception scopes conservatively omit affected domain blocks."
 }

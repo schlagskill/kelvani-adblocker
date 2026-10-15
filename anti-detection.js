@@ -1,5 +1,5 @@
 // Compatibility for two named detection libraries; no universal invisibility claim.
-// Registered only for sites individually enabled by the user.
+// Enabled by the user's global preference or a per-site selection.
 (() => {
  let active=true;
  addEventListener('kelvani:disable-compatibility',()=>{active=false;});

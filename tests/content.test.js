@@ -10,3 +10,5 @@ async function fixture(settings,host='www.youtube.com'){
 }
 test('enabled YouTube filter is not disabled by initial content script',async()=>{const f=await fixture({enabled:true,cosmetic:true,youtube:true,exceptions:[],antiSites:[]});assert.equal(f.stats().clicked,0);assert.ok(!f.stats().events.includes('kelvani:disable-youtube'));});
 test('pausing and website exceptions disable player filtering without clicking',async()=>{const data={enabled:true,cosmetic:true,youtube:true,exceptions:[],antiSites:[]};const f=await fixture(data);f.change({...data,exceptions:['youtube.com']});assert.equal(f.stats().clicked,0);assert.ok(f.stats().events.includes('kelvani:disable-youtube'));});
+
+test('global compatibility stays active and website exceptions still disable it',async()=>{const state={enabled:true,cosmetic:false,youtube:false,compatibilityAll:true,exceptions:[],antiSites:[]};const f=await fixture(state,'news.example.com');assert.ok(!f.stats().events.includes('kelvani:disable-compatibility'));f.change({...state,exceptions:['example.com']});assert.ok(f.stats().events.includes('kelvani:disable-compatibility'));});

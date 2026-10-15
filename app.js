@@ -1,3 +1,4 @@
+import {exportSettings,importSettings} from "./settings-backup.js";
 import "./assets/ui/review.js";
 import { showNotice } from "./assets/ui/feedback.js?v=1";
 import { icon } from "./assets/ui/icons.js?v=1.0";
@@ -7,14 +8,15 @@ let state={...defaults},currentHost=null,timer,busy=false,dirty=false;
 if(location.pathname.endsWith('popup.html'))document.body.classList.add('popup');
 function notice(text,error=false){showNotice($("notice"),text,{error});}
 function render(reset=false){
- for(const key of ['enabled','cosmetic','youtube','tracking'])$(key).checked=state[key];
+ for(const key of ['enabled','cosmetic','youtube','tracking','compatibilityAll'])$(key).checked=state[key];
  if(reset||!dirty)for(const key of ['exceptions','blocked','antiSites'])$(key).value=state[key].join('\n');
  $('status').hidden=native&&state.enabled; $('status').textContent=native?(state.enabled?'':'Schutz pausiert.'):'Design-Vorschau · hier werden keine Anfragen blockiert.';
  $('host').textContent=currentHost||'Keine unterstützte Website geöffnet';
  $('exception').textContent=currentHost&&isExcluded(currentHost,state.exceptions)?'Schutz für diese Website aktivieren':'Website vom Schutz ausnehmen';
- $('compatibility').checked=Boolean(currentHost&&isExcluded(currentHost,state.antiSites));
+ $('compatibility').checked=state.compatibilityAll||Boolean(currentHost&&isExcluded(currentHost,state.antiSites));
  for(const control of document.querySelectorAll('button,input'))control.disabled=busy;
- $('exception').disabled=busy||!currentHost;$('compatibility').disabled=busy||!currentHost;
+ $('exception').disabled=busy||!currentHost;$('compatibility').disabled=busy||!currentHost||state.compatibilityAll;
+ $('compatibility-hint').textContent=state.compatibilityAll?'Für alle Websites eingeschaltet.':'Nur für diese Website · experimentell.';
 }
 async function persist(next,reset=false){
  if(busy)return;busy=true;render();
@@ -29,7 +31,7 @@ async function persist(next,reset=false){
   notice(error.message,true);
  }finally{busy=false;render(reset&&!dirty);}
 }
-for(const key of ['enabled','cosmetic','youtube','tracking'])$(key).addEventListener('change',()=>persist({...state,[key]:$(key).checked}));
+for(const key of ['enabled','cosmetic','youtube','tracking','compatibilityAll'])$(key).addEventListener('change',()=>persist({...state,[key]:$(key).checked}));
 for(const key of ['exceptions','blocked','antiSites'])$(key).addEventListener('input',()=>{dirty=true;});
 $('save').addEventListener('click',()=>persist({...state,...Object.fromEntries(['exceptions','blocked','antiSites'].map(key=>[key,$(key).value.split(/\s+/).filter(Boolean)]))},true));
 $('exception').addEventListener('click',()=>{const matching=state.exceptions.filter(d=>currentHost===d||currentHost.endsWith('.'+d));persist({...state,exceptions:matching.length?state.exceptions.filter(d=>!matching.includes(d)):[...state.exceptions,currentHost]});});
@@ -51,3 +53,19 @@ try{
 }catch(error){notice(error.message,true);}render();
 
 $("expand").replaceChildren(icon("expand"));
+
+$('export-settings').addEventListener('click',()=>{
+ const blob=new Blob([JSON.stringify(exportSettings(state),null,2)],{type:'application/json'}),url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='KelvaniAdBlocker-Einstellungen.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);notice('Einstellungen lokal exportiert.');
+});
+$('import-settings').addEventListener('click',()=>{if(!busy)$('settings-file').click();});
+$('settings-file').addEventListener('change',async()=>{
+ const file=$('settings-file').files[0];$('settings-file').value='';if(!file)return;
+ try{
+  if(file.size>1000000)throw new Error('Die Sicherung ist zu groß.');
+  if(dirty&&!confirm('Ungespeicherte Änderungen durch die Sicherung ersetzen?'))return;
+  const latest=native?(await chrome.storage.local.get('settings')).settings:JSON.parse(localStorage.getItem('kelvani-adblocker-preview')||'null');
+  const next=importSettings(await file.text(),latest||defaults);
+  if(!confirm('Gespeicherte Ausnahmen und Regeln mit dieser Sicherung ersetzen?'))return;
+  await persist(next,true);
+ }catch(error){notice(error.message,true);}
+});

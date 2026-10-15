@@ -4,7 +4,7 @@ export function hostname(value) {
   if (!['http:','https:'].includes(url.protocol) || url.username || url.password || host.length>253 || !host.includes('.') || !host.split('.').every(label=>/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/i.test(label))) throw Error('Bitte eine gültige Website eingeben.');
   return host;
 }
-export const defaults = {enabled:true, cosmetic:true, youtube:false, tracking:true, exceptions:[], blocked:[], antiSites:[],revision:0};
+export const defaults = {enabled:true, cosmetic:true, youtube:false, tracking:true, compatibilityAll:false, exceptions:[], blocked:[], antiSites:[],revision:0};
 export function validate(input) {
   if (!input || typeof input !== 'object') throw Error('Ungültige Einstellungen.');
   const result = {...defaults};
@@ -12,6 +12,8 @@ export function validate(input) {
   result.revision=input.revision??0;
   if(input.tracking!==undefined && typeof input.tracking!=='boolean')throw Error('Ungültiger Tracking-Schalter.');
   result.tracking=input.tracking??true;
+  if(input.compatibilityAll!==undefined && typeof input.compatibilityAll!=='boolean')throw Error('Ungültiger Detektor-Schalter.');
+  result.compatibilityAll=input.compatibilityAll??false;
   for (const key of ['enabled','cosmetic','youtube']) { if (typeof input[key] !== 'boolean') throw Error('Ungültiger Schalter.'); result[key] = input[key]; }
   for (const key of ['exceptions','blocked','antiSites']) {
     const list=key==='antiSites' && input[key]===undefined ? [] : input[key];
@@ -27,7 +29,8 @@ export function scriptsFor(state) {
   const scripts=[];
   if(state.youtube)scripts.push({...base,id:'kelvani-youtube',matches:['*://*.youtube.com/*','*://*.youtube-nocookie.com/*'],js:['youtube-main.js']});
   const domains=state.antiSites.filter(host=>!isExcluded(host,state.exceptions)&&!/(^|\.)youtube(?:-nocookie)?\.com$/.test(host));
-  if(domains.length) scripts.push({...base,id:'kelvani-compatibility',matches:domains.map(host=>`*://*.${host}/*`),js:['anti-detection.js']});
+  if(state.compatibilityAll) scripts.push({...base,id:'kelvani-compatibility',matches:['http://*/*','https://*/*'],excludeMatches:[...excludeMatches,'*://*.youtube.com/*','*://*.youtube-nocookie.com/*'],js:['anti-detection.js']});
+  else if(domains.length) scripts.push({...base,id:'kelvani-compatibility',matches:domains.map(host=>`*://*.${host}/*`),js:['anti-detection.js']});
   return scripts;
 }
 export function isExcluded(host, exceptions) { return exceptions.some(domain => host === domain || host.endsWith(`.${domain}`)); }

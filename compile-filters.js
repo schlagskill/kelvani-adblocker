@@ -9,4 +9,4 @@ for(const name of ['easylist','easyprivacy']){
  console.log(`${name}: ${result.domainFilters} domain filters, ${result.pathFilters} path filters, ${result.rules.length} native rules.`);
 }
 if(total>30000)throw Error('Guaranteed static rule budget exceeded');
-fs.writeFileSync(new URL('filters/report.json',import.meta.url),JSON.stringify({source:'The EasyList authors',compiled:reports.reduce((n,r)=>n+r.domainFilters+r.pathFilters,0),networkRules:total,lists:reports,scope:'Plain domain and domain-anchored path rules; supported resource, third-party and initiator options. Advanced syntax is skipped.'},null,2));
+fs.writeFileSync(new URL('filters/report.json',import.meta.url),JSON.stringify({source:'The EasyList authors',compiled:reports.reduce((n,r)=>n+r.domainFilters+r.pathFilters,0),networkRules:total,lists:reports,scope:'Plain domain, domain-anchored path and protocol-anchored URL rules; supported resource, third-party and initiator options. Unsupported exception scopes conservatively omit affected domain blocks.'},null,2));

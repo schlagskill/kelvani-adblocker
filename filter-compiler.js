@@ -20,14 +20,23 @@ export function compilePath(line,id) {
  if(!condition.resourceTypes.length)return null;
  return {id,priority:allow?2:1,action:{type:allow?'allow':'block'},condition};
 }
+export function compileAbsolute(line,id) {
+ const allow=line.startsWith('@@'),body=allow?line.slice(2):line;
+ const [pattern,options='',...extra]=body.split('$');
+ if(extra.length||!/^\|https?:\/\/[a-z0-9.-]+\/[a-z0-9_%./?&=+*^|,:;@!~-]+$/i.test(pattern))return null;
+ const host=/^\|https?:\/\/([a-z0-9.-]+)/i.exec(pattern)[1];
+ const scoped=compilePath((allow?'@@':'')+'||'+host+'/filter-placeholder'+(options?'$'+options:''),id);
+ if(!scoped)return null;
+ return {...scoped,condition:{...scoped.condition,urlFilter:pattern}};
+}
 export function compileFilters(source) {
  const lines=source.split(/\r?\n/);const domains=[];const paths=[];const seen=new Set();
  // Supported exceptions retain their scope; only unsupported exceptions require
  // conservatively omitting related domain blocks.
- const exempt=new Set(lines.filter(l=>l.startsWith('@@')&&!compilePath(l,1)).flatMap(l=>[...l.matchAll(/\|\|([a-z0-9.-]+)/gi)].map(m=>m[1].toLowerCase())));
+ const exempt=new Set(lines.filter(l=>l.startsWith('@@')&&!compilePath(l,1)&&!compileAbsolute(l,1)).flatMap(l=>[...l.matchAll(/\|\|([a-z0-9.-]+)|\|https?:\/\/([a-z0-9.-]+)/gi)].map(m=>(m[1]||m[2]).toLowerCase())));
  for(const line of lines){
-  let rule=compileLine(line,1);const pathRule=!rule && compilePath(line,1);rule=rule||pathRule;if(!rule)continue;
-  const host=/^\|\|([a-z0-9.-]+)/i.exec(rule.condition.urlFilter)?.[1].toLowerCase();
+  let rule=compileLine(line,1);const pathRule=!rule && (compilePath(line,1)||compileAbsolute(line,1));rule=rule||pathRule;if(!rule)continue;
+  const host=(/^\|\|([a-z0-9.-]+)/i.exec(rule.condition.urlFilter)?.[1]||/^\|https?:\/\/([a-z0-9.-]+)/i.exec(rule.condition.urlFilter)?.[1])?.toLowerCase();
   if(rule.action.type==='block' && [...exempt].some(e=>host===e||host.endsWith('.'+e)||e.endsWith('.'+host)))continue;
   const key=JSON.stringify([rule.action,rule.condition]);if(seen.has(key))continue;seen.add(key);
   (pathRule?paths:domains).push(rule);

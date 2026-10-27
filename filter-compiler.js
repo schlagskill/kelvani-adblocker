@@ -14,7 +14,7 @@ export function compilePath(line,id) {
    const domains=option.slice(7).split('|');const positive=[],negative=[];
    for(let domain of domains){const neg=domain.startsWith('~');if(neg)domain=domain.slice(1);if(!/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain))return null;(neg?negative:positive).push(domain.toLowerCase());}
    if(positive.length)condition.initiatorDomains=positive;if(negative.length)condition.excludedInitiatorDomains=negative;
-  }else{const neg=option.startsWith('~');const type=aliases[neg?option.slice(1):option];if(!type)return null;(neg?exclude:include).push(type);}
+  }else{const neg=option.startsWith('~');const key=neg?option.slice(1):option;if(!Object.hasOwn(aliases,key))return null;const type=aliases[key];(neg?exclude:include).push(type);}
  }
  condition.resourceTypes=[...new Set(include.length?include:resourceTypes)].filter(t=>!exclude.includes(t));
  if(!condition.resourceTypes.length)return null;

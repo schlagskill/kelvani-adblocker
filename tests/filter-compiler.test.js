@@ -13,3 +13,19 @@ test('absolute filters compile without crashing domain omission',()=>{const resu
 test('unsupported absolute exceptions conservatively preserve affected domain',()=>{const result=compileFilters('||ads.example.com^\n|https://ads.example.com/banner*$image\n@@|https://ads.example.com/safe$redirect=unsupported\n||other.example^');assert.equal(result.rules.length,1);assert.deepEqual(result.rules[0].condition.requestDomains,['other.example']);});
 
 test('global detector compatibility persists without an active website and honors exceptions',async()=>{const {defaults,validate,scriptsFor}=await import('../core.js');const state=validate({...defaults,compatibilityAll:true,exceptions:['example.com']});const script=scriptsFor(state)[0];assert.equal(state.compatibilityAll,true);assert.deepEqual(script.matches,['http://*/*','https://*/*']);assert.ok(script.excludeMatches.includes('*://*.example.com/*'));assert.deepEqual(scriptsFor({...state,enabled:false}),[]);assert.equal(validate({...defaults,compatibilityAll:undefined}).compatibilityAll,false);assert.throws(()=>validate({...defaults,compatibilityAll:'yes'}));});
+
+test('inherited object names are unsupported options, including negated forms',async()=>{
+ const {compileAbsolute}=await import('../filter-compiler.js');
+ for(const name of ['constructor','toString','valueOf','__proto__','hasOwnProperty']){
+  for(const option of [name,'~'+name]){
+   assert.equal(compilePath('||ads.example/banner$'+option,1),null,option);
+   assert.equal(compileAbsolute('|https://ads.example/banner$'+option,1),null,option);
+  }
+ }
+});
+test('unsupported options cannot poison or broaden otherwise valid compiled filters',()=>{
+ const result=compileFilters('||safe.example/banner$image\n||bad.example/banner$constructor\n||bad.example/banner$~toString');
+ assert.equal(result.rules.length,1);
+ assert.equal(result.rules[0].condition.urlFilter,'||safe.example/banner');
+ assert.deepEqual(result.rules[0].condition.resourceTypes,['image']);
+});

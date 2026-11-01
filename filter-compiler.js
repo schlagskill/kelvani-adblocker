@@ -1,4 +1,4 @@
-import {compileLine} from './core.js';
+import {compileLine,hostname} from './core.js';
 const resourceTypes=['script','image','stylesheet','font','media','xmlhttprequest','sub_frame','ping','other'];
 const aliases={script:'script',image:'image',stylesheet:'stylesheet',font:'font',media:'media',xmlhttprequest:'xmlhttprequest',subdocument:'sub_frame',ping:'ping',other:'other'};
 export function compilePath(line,id) {
@@ -37,6 +37,7 @@ export function compileFilters(source) {
  for(const line of lines){
   let rule=compileLine(line,1);const pathRule=!rule && (compilePath(line,1)||compileAbsolute(line,1));rule=rule||pathRule;if(!rule)continue;
   const host=(/^\|\|([a-z0-9.-]+)/i.exec(rule.condition.urlFilter)?.[1]||/^\|https?:\/\/([a-z0-9.-]+)/i.exec(rule.condition.urlFilter)?.[1])?.toLowerCase();
+  try{if(!host||hostname(host)!==host.toLowerCase())continue;}catch{continue;}
   if(rule.action.type==='block' && [...exempt].some(e=>host===e||host.endsWith('.'+e)||e.endsWith('.'+host)))continue;
   const key=JSON.stringify([rule.action,rule.condition]);if(seen.has(key))continue;seen.add(key);
   (pathRule?paths:domains).push(rule);

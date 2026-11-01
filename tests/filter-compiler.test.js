@@ -29,3 +29,12 @@ test('unsupported options cannot poison or broaden otherwise valid compiled filt
  assert.equal(result.rules[0].condition.urlFilter,'||safe.example/banner');
  assert.deepEqual(result.rules[0].condition.resourceTypes,['image']);
 });
+
+test('malformed filter hosts cannot enter a packaged rule list',()=>{
+ const invalid=['ads..example','-ads.example','ads-.example','x'.repeat(64)+'.example'];
+ for(const host of invalid){
+  const result=compileFilters('||valid.example^\n||'+host+'^\n||'+host+'/banner$image\n|https://'+host+'/banner$script');
+  assert.equal(result.rules.length,1,host);
+  assert.deepEqual(result.rules[0].condition.requestDomains,['valid.example']);
+ }
+});

@@ -38,3 +38,18 @@ test('malformed filter hosts cannot enter a packaged rule list',()=>{
   assert.deepEqual(result.rules[0].condition.requestDomains,['valid.example']);
  }
 });
+
+test('invalid domain restrictions cannot enter browser rules or lose their scope',()=>{
+ for(const domain of ['bad..example','-bad.example','bad-.example','x'.repeat(64)+'.example']){
+  for(const prefix of ['', '~']){
+   assert.equal(compilePath('||ads.example/banner$image,domain='+prefix+domain,1),null);
+   const result=compileFilters('||good.example^\n||ads.example/banner$script,domain='+prefix+domain);
+   assert.equal(result.rules.length,1);
+   assert.deepEqual(result.rules[0].condition.requestDomains,['good.example']);
+  }
+ }
+ const rule=compilePath('||ads.example/banner$image,domain=NEWS.example|~safe.example',1);
+ assert.deepEqual(rule.condition.initiatorDomains,['news.example']);
+ assert.deepEqual(rule.condition.excludedInitiatorDomains,['safe.example']);
+});
+

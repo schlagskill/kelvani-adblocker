@@ -12,7 +12,7 @@ export function compilePath(line,id) {
   else if(option==='match-case')condition.isUrlFilterCaseSensitive=true;
   else if(option.startsWith('domain=')){
    const domains=option.slice(7).split('|');const positive=[],negative=[];
-   for(let domain of domains){const neg=domain.startsWith('~');if(neg)domain=domain.slice(1);if(!/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain))return null;(neg?negative:positive).push(domain.toLowerCase());}
+   for(let domain of domains){const neg=domain.startsWith('~');if(neg)domain=domain.slice(1);if(!/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain))return null;try{domain=hostname(domain);}catch{return null;}(neg?negative:positive).push(domain);}
    if(positive.length)condition.initiatorDomains=positive;if(negative.length)condition.excludedInitiatorDomains=negative;
   }else{const neg=option.startsWith('~');const key=neg?option.slice(1):option;if(!Object.hasOwn(aliases,key))return null;const type=aliases[key];(neg?exclude:include).push(type);}
  }
